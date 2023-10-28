@@ -112,10 +112,7 @@ search_result = Text(root, width=80, height=50, font=("arial", 12))
 search_result.place(x=450, y=5)
 
 
-
-
-
-
+#Function to use Enter key to use search command
 
 def enter_press(search):
     search_btn.invoke()
@@ -125,6 +122,5 @@ root.bind("<Return>", enter_press)
 root.mainloop()
 
 
-#mongodb+srv://zachgedge:wranglerjetta1@cluster0.kvykuob.mongodb.net/
 
 
