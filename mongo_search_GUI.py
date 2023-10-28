@@ -33,6 +33,7 @@ def search_mongo():
     client_search = client_inp.get()
     db_search = db_inp.get()
     collection_search = collection_inp.get()
+    operator = operator_inp.get()
     query = query_inp.get()
     search_result.delete(1.0, END)
 
@@ -42,7 +43,7 @@ def search_mongo():
         db = client[f"{db_search}"]
         collection = db[f"{collection_search}"]
 
-        cursor = collection.find({"recipe_name": query})
+        cursor = collection.find({operator: query})
 
         for document in cursor:
             formatted_document = format_mongo(document)
@@ -95,8 +96,8 @@ db_inp.place(x=15, y=150)
 collection_inp = Entry(search_frame, width=40, font=('arial', 12))
 collection_inp.place(x=15, y=240)
 
-operator_inp_inp = Entry(search_frame, width=40, font=('arial', 12))
-operator_inp_inp.place(x=15, y=330)
+operator_inp = Entry(search_frame, width=40, font=('arial', 12))
+operator_inp.place(x=15, y=330)
 
 query_inp = Entry(search_frame, width=40, font=('arial', 12))
 query_inp.place(x=15, y=420)
