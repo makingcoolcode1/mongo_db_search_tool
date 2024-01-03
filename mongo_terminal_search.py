@@ -57,6 +57,7 @@ while True:
 
         try:
             mongo_search = collection.find({operator: query})
+            recipe_found = False
 
 
             for document in mongo_search:
@@ -64,6 +65,9 @@ while True:
                 print()
                 print(formatted_document)
                 print()
+            
+            if not recipe_found:
+                print("ERROR: No result found from database")
             
         except Exception as e:
             print(f"ERROR: {str(e)} ")
