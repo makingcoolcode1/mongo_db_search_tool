@@ -1,73 +1,42 @@
 
 from pymongo import MongoClient
 
-
-def format_mongo(document, prefix = ''):
-    formatted = ""
-
-    for key, value in document.items():
-        new_prefix = f"{prefix}.{key}" if prefix else key
-
-        if isinstance(value, dict):
-            formatted += format_mongo(value, new_prefix)
-        elif isinstance(value, list):
-            formatted += f"{new_prefix}\n"
+print("\n**WELCOME TO THE MONGO.DB SEARCH TOOL**")
+print("\nYou may type 'quit' at anytime to exit the program ")
 
 
-            for item in value:
-                if isinstance(item, dict):
-                    formatted += format_mongo(item, new_prefix)
-                else:
-                    formatted += f"           {item}\n"
-        
-        else:
-            formatted += f"{new_prefix}: {value}\n\n"
-
-    
-    return formatted
+clientInput = input("\nEnter your mongo.db connection string")
+dbInput = input("\nEnter your database name to search")
+collectionInput = input("\nEnter your collection to search")
 
 
+try:
+    clientTest = MongoClient(clientInput)
+    dbTest = clientTest.get_database(dbInput)
+    collectionTest = dbTest.get_collection(collectionInput)
+
+    collection_name = dbTest.list_collection_names()
+
+    if collection_name:
+        print("\n Successfully Connected to Mongodb Database..")
+        print("Collections in database are:", collection_name)
+    else:
+        print("Successfully connected to the database but the database is empty")
+except Exception as e:
+    print("\nERROR: Failed to connect to the database")
+    print(f"\n ERROR: {str(e)}")
+
+client = (f"{clientInput}")
+db = [f"{dbInput}"]
+collectionInput = [f"{collectionInput}"]
 
 
 while True:
-    client_inp = input("Enter your mongo.db connection string or type exit to quit ")
+    operatorInput = input("Enter a mongo.db operator to search: ")
+    if operatorInput.lower() == "exit":
+        exit("Exiting Program.....")
+    
+    queryInput = input("Enter a search query")
+    if queryInput.lower() == "exit":
+        exit("Exiting Program......")
         
-    if client_inp.lower() == "exit":
-        break
-        
-    db_inp = input("Enter your mongo.db database name ")
-    collection_inp = input("Enter your mongo.db collection name ")
-
-
-    client = MongoClient(f"{client_inp}")
-    db = client[f"{db_inp}"]
-    collection = db[f"{collection_inp}"]
-        
-    while True:
-        operator = input("Enter your mongo.db operator or type exit to quit ")
-        
-        if operator.lower() == "exit":
-            exit(0) 
-
-        query = input("Enter your search query or type exit to quit ")
-        
-        if query.lower() == "exit":
-            exit(0)
-
-
-        try:
-            mongo_search = collection.find({operator: query})
-            recipe_found = False
-
-
-            for document in mongo_search:
-                formatted_document = format_mongo(document)
-                print()
-                print(formatted_document)
-                print()
-            
-            if not recipe_found:
-                print("ERROR: No result found from database")
-            
-        except Exception as e:
-            print(f"ERROR: {str(e)} ")
