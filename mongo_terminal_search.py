@@ -48,7 +48,7 @@ while not connected:
         else:
             print("/Successfully connected to the mongo.db database but it is empty!")
             connected = True
-            
+
     except Exception as e:
         print("\nERROR: Failed to connect to the mongo.db database!")
         print(f"\nERROR: {str(e)}")
@@ -61,13 +61,14 @@ while True:
     try:
         client = MongoClient(clientInput)
         db = client[f"{dbInput}"]
-        collecion = [f"{collectionInput}"]
+        collecion = db[f"{collectionInput}"]
 
-        searchDatabase = collectionInput.find({operatorInput:queryInput})
+        searchDatabase = collecion.find({operatorInput:queryInput})
 
         for document in searchDatabase:
             formatted_document = format_mongo(document)
             print(formatted_document)
+    
     except Exception as e:
         print(f"ERROR: {str(e)}")
 
