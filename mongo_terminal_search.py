@@ -1,32 +1,74 @@
 
 from pymongo import MongoClient
 
-print("** WELCOME TO THE MONGO.DB SEARCH TOOL **")
+def format_mongo(document, prefix = ""):
+    formatted = ""
+
+    for key, value in document.items():
+        new_prefix = f"{prefix}.{key}" if prefix else key
+
+        if isinstance(value, dict):
+            formatted += format_mongo(value, new_prefix)
+        elif isinstance(value, list):
+            formatted += f"{new_prefix}\n"
+
+            for item in value:
+                if isinstance(item, dict):
+                    formatted += format_mongo(item, new_prefix)
+                else:
+                    formatted += f"            {value}\n\n"
+
+        else:
+            formatted += f"{new_prefix}:{value}\n"
+    
+    return formatted
+
+
+print("\n** WELCOME TO THE MONGO.DB CONNECTION TOOL **")
 
 connected = False
 
 while not connected:
+
     clientInput = input("\nEnter your mongo.db connection string: ")
     dbInput = input("\nEnter your database name: ")
     collectionInput = input("\nEnter your collection name: ")
 
-    
     try:
-
         clientTest = MongoClient(clientInput)
         dbTest = clientTest.get_database(dbInput)
         collectionTest = dbTest.get_collection(collectionInput)
 
-        testConnection = dbTest.list_collection_names()
+        testMongoConnection = dbTest.list_collection_names()
 
-        if testConnection:
-            print("\nSuccessfully connected to the mongo.db database")
-            print("\nCollections in the database include: ", testConnection)
+        if testMongoConnection:
+            print("\nSuccessfully connected to the mongo.db database!")
+            print('\nCollections in the database include:', testMongoConnection)
             connected = True
         else:
-            print("\nSuccessfully connected to the database but there are no collections or the database name is invalid!")
+            print("/Successfully connected to the mongo.db database but it is empty!")
             connected = True
+            
     except Exception as e:
-        print("\nERROR: Could not connect to the database!")
-        print(f"\n ERROR: {str(e)}")
+        print("\nERROR: Failed to connect to the mongo.db database!")
+        print(f"\nERROR: {str(e)}")
         connected = False
+
+while True:
+    operatorInput = input("\nEnter your operator to search: ")
+    queryInput = input("\nEnter a search query: ")
+
+    try:
+        client = MongoClient(clientInput)
+        db = client[f"{dbInput}"]
+        collecion = [f"{collectionInput}"]
+
+        searchDatabase = collectionInput.find({operatorInput:queryInput})
+
+        for document in searchDatabase:
+            formatted_document = format_mongo(document)
+            print(formatted_document)
+    except Exception as e:
+        print(f"ERROR: {str(e)}")
+
+        
