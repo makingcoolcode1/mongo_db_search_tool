@@ -16,7 +16,7 @@ def format_mongo(document, prefix = ""):
                 if isinstance(item, dict):
                     formatted += format_mongo(item, new_prefix)
                 else:
-                    formatted += f"            {value}\n\n"
+                    formatted += f"            {item}\n\n"
 
         else:
             formatted += f"{new_prefix}:{value}\n"
@@ -30,7 +30,9 @@ connected = False
 
 while not connected:
 
-    clientInput = input("\nEnter your mongo.db connection string: ")
+    clientInput = input("\n\nEnter your mongo.db connection string: ")
+
+
     dbInput = input("\nEnter your database name: ")
     collectionInput = input("\nEnter your collection name: ")
 
