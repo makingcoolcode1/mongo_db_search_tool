@@ -1,77 +1,60 @@
 
 from pymongo import MongoClient
+from format_mongo import format_mongo
 
-def format_mongo(document, prefix = ""):
-    formatted = ""
-
-    for key, value in document.items():
-        new_prefix = f"{prefix}.{key}" if prefix else key
-
-        if isinstance(value, dict):
-            formatted += format_mongo(value, new_prefix)
-        elif isinstance(value, list):
-            formatted += f"{new_prefix}\n"
-
-            for item in value:
-                if isinstance(item, dict):
-                    formatted += format_mongo(item, new_prefix)
-                else:
-                    formatted += f"            {item}\n\n"
-
-        else:
-            formatted += f"{new_prefix}:{value}\n"
-    
-    return formatted
-
-
-print("\n** WELCOME TO THE MONGO.DB CONNECTION TOOL **")
+print("** WELCOME TO THE MONGO.DB SEARCH TOOL **")
+print("Type 'exit' at any time to quit")
 
 connected = False
 
 while not connected:
 
-    clientInput = input("\n\nEnter your mongo.db connection string: ")
-
+    clientInput = input("\nEnter your mongo.db connection string: ")
+    if clientInput.lower() == "exit":
+        exit("Exiting Mongo.db Search Tool")
 
     dbInput = input("\nEnter your database name: ")
+    if dbInput.lower() == "exit":
+        exit("Exiting Mongo.db Search Tool")
+
     collectionInput = input("\nEnter your collection name: ")
+    if collectionInput.lower() == "exit":
+        exit("Exiting Mongo.db Search Tool")
 
     try:
         clientTest = MongoClient(clientInput)
         dbTest = clientTest.get_database(dbInput)
         collectionTest = dbTest.get_collection(collectionInput)
 
-        testMongoConnection = dbTest.list_collection_names()
+        testConnection = dbTest.list_collection_names()
 
-        if testMongoConnection:
-            print("\nSuccessfully connected to the mongo.db database!")
-            print('\nCollections in the database include:', testMongoConnection)
+        if testConnection:
+            print("\nConnection Successful!")
+            print("\nCollections in the database include: ", testConnection)
             connected = True
         else:
-            print("/Successfully connected to the mongo.db database but it is empty!")
-            connected = True
-
+            print("\nConnection Sucessful but the database is empty.......Please try again!")
+            connected = False
     except Exception as e:
-        print("\nERROR: Failed to connect to the mongo.db database!")
+        print("\nERROR: Failed to connect to the database!")
         print(f"\nERROR: {str(e)}")
         connected = False
 
 while True:
     operatorInput = input("\nEnter your operator to search: ")
-    queryInput = input("\nEnter a search query: ")
+    if operatorInput.lower() == "exit":
+        exit("Exiting Mongo.db Search Tool")
 
-    try:
-        client = MongoClient(clientInput)
-        db = client[f"{dbInput}"]
-        collecion = db[f"{collectionInput}"]
+    querySearch = input("\nEnter a search query: ")
+    if querySearch.lower() == exit:
+        exit("Exiting Mongo.db Search Tool")
 
-        searchDatabase = collecion.find({operatorInput:queryInput})
+    client = MongoClient(clientInput)
+    db = client[dbInput]
+    collection = db[collectionInput]
 
-        for document in searchDatabase:
-            formatted_document = format_mongo(document)
-            print(formatted_document)
-    
-    except Exception as e:
-        print(f"ERROR: {str(e)}")
+    searchMongoDb = collection.find({operatorInput:querySearch})
 
-        
+    for document in searchMongoDb:
+        formatted_document = format_mongo(document)
+        print(formatted_document)
