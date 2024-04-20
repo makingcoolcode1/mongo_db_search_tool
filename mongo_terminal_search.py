@@ -37,14 +37,14 @@ while not connected:
         testConnection = db.list_collection_names()
 
         if testConnection:
-            print("Successfully connected to the mongo.db database!")
+            print("\nSuccessfully connected to the mongo.db database!")
             connected = True
         else:
             print("Successfully connected to the mongo.db database, but the database is empty! Please enter another database: ")
             connected = False
     
     except Exception as e:
-        print("ERROR! Failed to connect to the mongo.db database:")
+        print("\nERROR! Failed to connect to the mongo.db database:")
         print(f"{str(e)}")
         connected = False
 
@@ -53,11 +53,11 @@ while True:
     try:
         operatorInput = input("\nEnter an oprator to search: ")
         if operatorInput.lower() == "exit":
-            exit("Exiting Program....")
+            exit("\nExiting Program....")
 
         queryInput = input("\nEnter a search query: ")
         if queryInput.lower() == "exit":
-            exit("Exiting Program")
+            exit("\nExiting Program")
 
 
         searchMongo = collection.find({operatorInput:queryInput})
@@ -69,7 +69,7 @@ while True:
             queryFound = True
         
         if not queryFound:
-            print("ERROR: No results found")
+            print("\nERROR: No results found")
 
     except KeyboardInterrupt:
         print("\nExiting Program....")
