@@ -50,8 +50,6 @@ while not connected:
 
 
 while True:
-
-    
     try:
         operatorInput = input("\nEnter an oprator to search: ")
         if operatorInput.lower() == "exit":
@@ -72,6 +70,12 @@ while True:
         
         if not queryFound:
             print("ERROR: No results found")
-    except:
-        print("ERROR: No results found:")
+
+    except KeyboardInterrupt:
+        print("\nExiting Program....")
+        exit()
+    except Exception as e:
+        print(f"ERROR{str(e)}")
+        exit()
+
 
