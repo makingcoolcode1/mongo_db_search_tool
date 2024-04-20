@@ -63,6 +63,7 @@ while True:
         searchMongo = collection.find({operatorInput:queryInput})
 
         queryFound = False
+        
         for document in searchMongo:
             formatted_document = format_mongo(document)
             print(formatted_document)
