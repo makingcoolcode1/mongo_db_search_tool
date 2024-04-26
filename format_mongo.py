@@ -3,18 +3,18 @@ def format_mongo(document, prefix = ""):
     formatted = ""
 
     for key, value in document.items():
-        new_prefix = f"{key}.{prefix}" if key else prefix
+        new_prefix = f"{prefix}.{key}" if prefix else key
 
         if isinstance(value, dict):
-            formatted += (value, new_prefix)
+            formatted += format_mongo(value, new_prefix)
         elif isinstance(value, list):
             formatted += f"{new_prefix}\n"
 
             for item in value:
-                if isinstance(item, list):
-                    formatted += (item, new_prefix)
+                if isinstance(item, dict):
+                    formatted += format_mongo(item, new_prefix)
                 else:
-                    formatted += f"       {item}\n\n"
+                    formatted += f"     {value}\n\n"
         
         else:
             formatted += f"{new_prefix}:{value}\n"

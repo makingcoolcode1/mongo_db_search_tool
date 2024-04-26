@@ -2,81 +2,60 @@
 from pymongo import MongoClient
 from format_mongo import format_mongo
 
-print("\n**Welcome to the mongo.db search tool**")
-print("Type 'exit' at any time to quit the application\n")
+print("\n**Welcome to the Mongo.db search tool**")
+print("Type 'exit' at anytime to quit")
 
-
-## Set boolean to continue if connection = False or break if connection = True in while loop
 connected = False
 
+
 while not connected:
-    
-    ## User input for db info....Type 'exit' to quit
+
     connectionInput = input("\nEnter your mongo.db connection string: ")
     if connectionInput.lower() == "exit":
-        exit("Exiting Program.....")
+        exit("Exiting Program....")
 
     dbInput = input("\nEnter your database name: ")
     if dbInput.lower() == "exit":
-        exit("Exiting Program.....")
+        exit("Exiting Program....")
 
-    collectionInput = input("\nEnter your collection mame: ")
+    collectionInput = input("Enter your collection name: ")
     if collectionInput.lower() == "exit":
-        exit("Exiting Program.....")
+        exit("Exiting Program....")
 
-        
-    ## Attempt to connect to database, show success/fail results
+    print("\nConnecting, Please wait..........")
+
     try:
-    
         client = MongoClient(connectionInput)
         db = client.get_database(dbInput)
         collection = db.get_collection(collectionInput)
 
-        print("\nConnecting...Please wait...........")
-
         testConnection = db.list_collection_names()
 
         if testConnection:
-            print("\nSuccessfully connected to the mongo.db database!")
+            print("\nSuccessfully connected to the database")
             connected = True
         else:
-            print("Successfully connected to the mongo.db database, but the database is empty! Please enter another database: ")
+            print("Successfully connected, but the database is empty, Please another entry: ")
             connected = False
-    
     except Exception as e:
-        print("\nERROR! Failed to connect to the mongo.db database:")
-        print(f"{str(e)}")
+        print("ERROR: Unable to connect to the database: ")
         connected = False
 
-
 while True:
-    try:
-        operatorInput = input("\nEnter an oprator to search: ")
-        if operatorInput.lower() == "exit":
-            exit("\nExiting Program....")
 
-        queryInput = input("\nEnter a search query: ")
-        if queryInput.lower() == "exit":
-            exit("\nExiting Program")
+    operatorInput = input("\nEnter your operator to search: ")
+    if operatorInput.lower() == "exit":
+        exit("Exiting Program....")
 
+    queryInput = input("\nEnter your search query: ")
+    if queryInput.lower() == "exit":
+        exit("Exiting Program....")
 
-        searchMongo = collection.find({operatorInput:queryInput})
+    searchQuery = collection.find({operatorInput:queryInput})
 
-        queryFound = False
-        
-        for document in searchMongo:
-            formatted_document = format_mongo(document)
-            print(formatted_document)
-            queryFound = True
-        
-        if not queryFound:
-            print("\nERROR: No results found")
+    for document in searchQuery:
+        formatted_document = format_mongo(document)
+        print(formatted_document)
 
-    except KeyboardInterrupt:
-        print("\nExiting Program....")
-        exit()
-    except Exception as e:
-        print(f"ERROR{str(e)}")
-        exit()
 
 
