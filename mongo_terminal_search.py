@@ -2,44 +2,40 @@
 from pymongo import MongoClient
 from format_mongo import format_mongo
 
-print("\n**Welcome to the Mongo.db search tool**")
-print("Type 'exit' at anytime to quit")
+print("\nW**Welcome to the mongo.db search tool**")
+print("\nType 'exit' at anytime to quit")
 
 connected = False
 
-
 while not connected:
 
-    connectionInput = input("\nEnter your mongo.db connection string: ")
-    if connectionInput.lower() == "exit":
-        exit("Exiting Program....")
-
+    clientInput = input("\nEnter your mongo.db connection string: ")
     dbInput = input("\nEnter your database name: ")
-    if dbInput.lower() == "exit":
-        exit("Exiting Program....")
-
-    collectionInput = input("Enter your collection name: ")
-    if collectionInput.lower() == "exit":
-        exit("Exiting Program....")
-
-    print("\nConnecting, Please wait..........")
+    collectionInput = input("\nEnter your collecion name: ")
 
     try:
-        client = MongoClient(connectionInput)
+    
+        client = MongoClient(clientInput)
         db = client.get_database(dbInput)
         collection = db.get_collection(collectionInput)
 
         testConnection = db.list_collection_names()
 
+        print("\nConnecting....Please Wait........")
+
         if testConnection:
-            print("\nSuccessfully connected to the database")
+            print("\nSuccessfully connected to the Mongo.db database!")
+            print("\n Collections in database include:", testConnection)
             connected = True
         else:
-            print("Successfully connected, but the database is empty, Please another entry: ")
+            print("\nSuccessfully connected to the database but it is empty! Please enter anoter databaseL ")
             connected = False
+    
     except Exception as e:
-        print("ERROR: Unable to connect to the database: ")
+        print("\nERROR: Failed to connect to the database.....Please enter a valid database. ")
+        print(f"{str(e)}")
         connected = False
+
 
 while True:
 
@@ -51,11 +47,11 @@ while True:
     if queryInput.lower() == "exit":
         exit("Exiting Program....")
 
-    searchQuery = collection.find({operatorInput:queryInput})
+    searchMongo = collection.find({operatorInput:queryInput})
 
-    for document in searchQuery:
+
+    for document in searchMongo:
         formatted_document = format_mongo(document)
         print(formatted_document)
 
-
-
+    
